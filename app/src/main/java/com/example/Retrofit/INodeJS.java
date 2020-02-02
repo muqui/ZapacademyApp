@@ -2,11 +2,13 @@ package com.example.Retrofit;
 
 
 
+import com.example.model.Attendance;
 import com.example.model.Beneficiary;
 import com.example.model.Event;
 import com.example.model.Token;
 import com.example.model.User;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -23,10 +25,11 @@ public interface INodeJS {
     @FormUrlEncoded
     Observable<String> registrerUser(@Field("email") String email, @Field("name") String name, @Field("password") String password);
 
+    /*
     @POST("login")
     @FormUrlEncoded
     Observable<String> loginUser(@Field("email") String email, @Field("password") String password);
-
+*/
     @POST("login")
     @FormUrlEncoded
     Call<Token> getUser(@Field("email") String email, @Field("password") String password);
@@ -57,5 +60,15 @@ public interface INodeJS {
 
     @GET("evento/eventos")
     Call<List<Event>> getListEvent(@Header("Authorization") String token);
+
+    @POST("evento/asistencia")
+    @FormUrlEncoded
+    Call<String> saveAttendance(@Field("status") String status,
+                                    @Field("fecha") String fecha,
+                                    @Field("event_id") String event_id,
+                                    @Field("user_id") String user_id,
+                                    @Field("beneficiary_id") String beneficiary_id,
+                                    @Header("Authorization") String token
+                                    );
 
 }

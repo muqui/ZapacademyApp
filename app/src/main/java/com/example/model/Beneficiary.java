@@ -6,6 +6,16 @@ import java.io.Serializable;
 
 public class Beneficiary implements Serializable {
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @SerializedName("id")
+    private String id;
     @SerializedName("CURP")
     private String curp;
     @SerializedName("nombre")

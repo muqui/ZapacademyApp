@@ -36,7 +36,7 @@ public class Resultado extends AppCompatActivity implements View.OnClickListener
 
 
         Log.d("Token En resultado  = ", ""+ token.getToken());
-        Log.d("User   en resultado  = ", ""+ token.getUsuario().toString());
+      Log.d("User   en resultado  = ", ""+ evento.getNombre());
        // Log.d("scanx1" , message);
          btnTomarFotografia = (Button) findViewById(R.id.btnTomarFotografia);
          btnTomarFotografia.setOnClickListener(this);

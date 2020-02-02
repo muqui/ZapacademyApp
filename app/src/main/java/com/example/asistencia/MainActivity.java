@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null;
 
     }
+    /*
     private void loginUser(String email, String password) throws Exception {
 
 
@@ -181,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+     */
 
 
 }

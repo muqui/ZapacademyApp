@@ -32,6 +32,9 @@ public class BusquedaManual extends AppCompatActivity implements View.OnClickLis
     private static Retrofit retrofit;
     Token token;
     Event event;
+    Beneficiary beneficiary;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,8 @@ public class BusquedaManual extends AppCompatActivity implements View.OnClickLis
         // String message = bundle.getString("resultado");
         token = (Token) getIntent().getSerializableExtra("token");
         event = (Event) getIntent().getSerializableExtra("event");
+        Log.d(" token Busqueda_manual", ""+ token.getToken());
+        Log.d("token Busqueda_manual", ""+ token.getUsuario().getId());
 
     }
 
@@ -76,6 +81,12 @@ public class BusquedaManual extends AppCompatActivity implements View.OnClickLis
                  Intent intent = new Intent (BusquedaManual.this, ResultadoManual.class);
                 intent.putExtra("beneficiaries", (Serializable) beneficiaries);
                 intent.putExtra("token",token);
+
+                intent.putExtra("event",event);
+
+
+
+
                 startActivityForResult(intent, 0);
             }
 
