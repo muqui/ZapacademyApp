@@ -117,11 +117,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 Token token = response.body();
+                Log.d("Token = ", ""+ token.getToken());
 
-                progressDialogLogin.dismiss();
-                Intent intent = new Intent(MainActivity.this, Evento.class);
-                intent.putExtra("token",token);
-                startActivityForResult(intent, 0);
+                if(token.getToken() != null){
+
+                    progressDialogLogin.dismiss();
+                    Intent intent = new Intent(MainActivity.this, Evento.class);
+                    intent.putExtra("token",token);
+                    startActivityForResult(intent, 0);
+
+
+                }
+                else{
+                    progressDialogLogin.dismiss();
+                    Toast.makeText(MainActivity.this, "Usuario y/o contraseña incorrecta " , Toast.LENGTH_SHORT).show();
+
+                }
+
 
             }
 

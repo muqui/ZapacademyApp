@@ -68,7 +68,15 @@ public interface INodeJS {
                                     @Field("event_id") String event_id,
                                     @Field("user_id") String user_id,
                                     @Field("beneficiary_id") String beneficiary_id,
+                                @Field("imagen") String imagen,
                                     @Header("Authorization") String token
                                     );
+
+
+    @POST("evento/asistencia/verificar")
+    @FormUrlEncoded
+    Call<String> validateAttendance(@Field("event_id") String event_id,@Field("beneficiary_id") String beneficiary_id, @Header("Authorization") String token
+    );
+
 
 }
