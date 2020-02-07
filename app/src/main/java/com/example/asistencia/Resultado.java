@@ -223,16 +223,18 @@ public class Resultado extends AppCompatActivity implements View.OnClickListener
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+       // String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        //String imageFileName = "JPEG_" + timeStamp + "_";
+        String name =""+ beneficiary.getCurp()+"_"+ evento.getId();
+
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
        // File storageDir = Environment.getExternalStorageDirectory();
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
+                name,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
+        Log.d("IMG_TEKP", ""+ image.getAbsolutePath());
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;

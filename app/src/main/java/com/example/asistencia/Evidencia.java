@@ -3,6 +3,7 @@ package com.example.asistencia;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,33 +29,42 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Evidencia extends AppCompatActivity {
+public class Evidencia extends AppCompatActivity implements View.OnClickListener {
     ImageView imgEvidencia;
     Button btnFinalizar;
     Token token;
     Event event;
     Beneficiary beneficiary;
     Bitmap bitmap;
+    ProgressDialog progressDialog;
     private  Retrofit retrofitLogin;
     String nombreImagen;
+    String imgf;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evidencia);
+        progressDialog = new ProgressDialog(Evidencia.this);
         Intent intent = getIntent();
         //bitmap = (Bitmap) intent.getParcelableExtra("evidencia");
-        String imgf = (String) intent.getStringExtra("evidencia");
 
-        Log.d("Imagen bitmap  = ", ""+ imgf);
+        //Image Path
+         imgf = (String) intent.getStringExtra("evidencia");
+
 
         beneficiary = (Beneficiary) getIntent().getSerializableExtra("resultado");
         event = (Event) getIntent().getSerializableExtra("event");
@@ -63,8 +73,8 @@ public class Evidencia extends AppCompatActivity {
         File file = new File(imgf);
 
         try {
-            bitmap = MediaStore.Images.Media
-                    .getBitmap(getApplicationContext().getContentResolver(), Uri.fromFile(file));
+            //Carga la imagen en carpeta temporal a un bitmap
+            bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), Uri.fromFile(file));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,23 +83,32 @@ public class Evidencia extends AppCompatActivity {
         imgEvidencia = (ImageView) findViewById(R.id.imgEvidencia);
         imgEvidencia.setImageBitmap(bitmap);
         btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
+        btnFinalizar.setOnClickListener(this);
+        /*
         btnFinalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                progressDialog.setMessage("loading");
+                progressDialog.show();
+                progressDialog.setCancelable(false);
+                btnFinalizar.setEnabled(false);
 
                 Attendance asistencia = new Attendance("1","2020-02-01",""+event.getId(),""+token.getUsuario().getId(),beneficiary.getId());
-                saveAttendance(asistencia);
+          //      saveAttendance(asistencia);
+                uploadEvidence();
 
+                progressDialog.dismiss();
 
             }
         });
+
+         */
 }
 
 //Registra evidencia
 
     private void saveAttendance (Attendance asistencia){
+
         User user = null;
 
 
@@ -104,14 +123,22 @@ public class Evidencia extends AppCompatActivity {
         Log.d("Respuesta = ", ""+ event.getId());
         Log.d("Respuesta = ", ""+ beneficiary.getId());
         Log.d("Respuesta = ", ""+ beneficiary.getCurp());
-        Call<String> call = api.saveAttendance("1","2020-02-01",""+event.getId(),""+ token.getUsuario().getId(),""+beneficiary.getId(), nombreImagen,"Bearer "+token.getToken());
+        Call<String> call = api.saveAttendance("1",asistencia.getFecha(),""+event.getId(),""+ token.getUsuario().getId(),""+beneficiary.getId(), nombreImagen,"Bearer "+token.getToken());
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage("Registrando asistencia ........");
+        pd.setIndeterminate(true);
+        pd.setCancelable(false);
+
         call.enqueue(new Callback<String>() {
+
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                pd.show();
                 String respuesta = response.body();
 
                 if(respuesta.equalsIgnoreCase("exists")){
-
+                   showDialog();
                     Toast.makeText(Evidencia.this, "Asistencia ya ha sido registrada "  , Toast.LENGTH_SHORT).show();
 
                 }
@@ -156,10 +183,6 @@ public class Evidencia extends AppCompatActivity {
     public void saveEvidence(String nombre){
         FileOutputStream outStream = null;
 
-
-
-
-
         // Write to SD Card
         try {
             File sdCard = Environment.getExternalStorageDirectory();
@@ -187,4 +210,77 @@ public class Evidencia extends AppCompatActivity {
     }
 
 
+
+    //Subir evidencia al server
+   private void uploadEvidence (){
+       final ProgressDialog pd = new ProgressDialog(this);
+       pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+       pd.setMessage("Subiendo evidencia ........");
+       pd.setIndeterminate(true);
+       pd.setCancelable(false);
+
+
+       File file = new File(imgf);
+       Log.d("Imagen evidencia ss", "" + file.getParent());
+       File newFile = new File(file.getParent()+"/"+ beneficiary.getCurp()+"_"+ event.getId()+".jpg");
+
+       Log.d("Imagen evidencia new", "" + newFile.getName());
+
+
+       file.renameTo(newFile);
+       Log.d("Imagen file", "" + file.getName());
+       Log.d("Imagen new ", "" + newFile.getName());
+       RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
+       MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", newFile.getName(), requestBody);
+
+
+        if(retrofitLogin == null)
+            retrofitLogin = new Retrofit.Builder()
+                    .baseUrl("https://zapacademy.herokuapp.com/")
+
+
+                    .build();
+        INodeJS api = retrofitLogin.create(INodeJS.class);
+        Call<ResponseBody> call = api.uploadEvindence(body,"Bearer "+token.getToken());
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                pd.show();
+                showDialog();
+                Toast.makeText(Evidencia.this, "Asistencia realiza con  Exito!!" , Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+}
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("Token", ""+ t);
+                Toast.makeText(Evidencia.this, "Error " + t , Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Log.d("Imagen evidencia new", "" + f.format(new Date()));
+        Attendance asistencia = new Attendance("1",""+f.format(new Date()),""+event.getId(),""+token.getUsuario().getId(),beneficiary.getId());
+              saveAttendance(asistencia);
+        uploadEvidence();
+
+
+    }
+
+    public void showDialog() {
+
+        if(progressDialog != null && !progressDialog.isShowing())
+            progressDialog.setMessage("Subiendo evidencia ........");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+            progressDialog.show();
+    }
 }

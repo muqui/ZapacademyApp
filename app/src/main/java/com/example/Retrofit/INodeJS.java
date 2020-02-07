@@ -12,12 +12,16 @@ import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface INodeJS {
@@ -75,8 +79,14 @@ public interface INodeJS {
 
     @POST("evento/asistencia/verificar")
     @FormUrlEncoded
-    Call<String> validateAttendance(@Field("event_id") String event_id,@Field("beneficiary_id") String beneficiary_id, @Header("Authorization") String token
-    );
+    Call<String> validateAttendance(@Field("event_id") String event_id,@Field("beneficiary_id") String beneficiary_id, @Header("Authorization") String token);
+
+    @POST("evento/asistencia/evidencia")
+    //@FormUrlEncoded
+    @Multipart
+    Call<ResponseBody> uploadEvindence(@Part MultipartBody.Part  avatar, @Header("Authorization") String token);
+
+
 
 
 }
