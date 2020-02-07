@@ -144,11 +144,11 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
                 }
                 else{
                     saveEvidence(""+ beneficiary.getCurp()+"_"+event.getId());
-                     Intent intent = new Intent (Evidencia.this, home.class);
-                     intent.putExtra("resultado",beneficiary);
-                    intent.putExtra("token",token);
-                     intent.putExtra("event",event);
-                     startActivityForResult(intent, 0);
+                    // Intent intent = new Intent (Evidencia.this, home.class);
+                    // intent.putExtra("resultado",beneficiary);
+                    //intent.putExtra("token",token);
+                    // intent.putExtra("event",event);
+                    // startActivityForResult(intent, 0);
                 }
 
 
@@ -247,6 +247,11 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 pd.show();
                 showDialog();
+                 Intent intent = new Intent (Evidencia.this, home.class);
+                 intent.putExtra("resultado",beneficiary);
+                 intent.putExtra("token",token);
+                 intent.putExtra("event",event);
+                 startActivityForResult(intent, 0);
                 Toast.makeText(Evidencia.this, "Asistencia realiza con  Exito!!" , Toast.LENGTH_SHORT).show();
                 pd.dismiss();
 }
