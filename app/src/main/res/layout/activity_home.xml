@@ -4,27 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#195B98"
+
     tools:context=".home">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="340dp"
-        android:layout_height="53dp"
+        android:layout_width="339dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+
         android:gravity="center_horizontal"
         android:text="Puedes registrar asistencia a través del código QR de tu CURP."
-        android:textColor="#ffff"
         android:textSize="20dp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="11dp"
-        tools:layout_editor_absoluteY="38dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="169dp"
         android:layout_height="155dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/qr" />
@@ -36,14 +40,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/custom_button_background"
-        android:drawableLeft="@drawable/ic_camara"
-        android:text="CAPTURA TU CÓDIGO"
-        android:textColor="#ffff"
+        android:background="@color/colorPrimary"
+        android:text="CAPTURA TU CÓDIGO QR"
+
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <TextView
@@ -53,9 +57,8 @@
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:text="O ingrésalo manualmente:"
-        android:textColor="#ffff"
-        android:textSize="20dp"
         android:textStyle="bold"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnScan" />
@@ -67,10 +70,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/custom_button_background"
-        android:drawableLeft="@drawable/ic_teclado"
+
         android:text="INGRESA MANUALMENTE"
-        android:textColor="#ffff"
+        android:background="@color/colorPrimary"
+
 
         android:textSize="20dp"
         android:textStyle="bold"
@@ -86,11 +89,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/custom_button_background"
         android:text="Salir"
-        android:textColor="#ffff"
+
         android:textSize="20dp"
         android:textStyle="bold"
+        android:background="@color/colorPrimary"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

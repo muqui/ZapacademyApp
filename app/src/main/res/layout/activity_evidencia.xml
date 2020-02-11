@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#195B98"
+
     tools:context=".Evidencia">
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:text="Evdencia obtenida"
-        android:textColor="#ffff"
+
         android:textSize="20dp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
@@ -43,9 +43,9 @@
         android:layout_marginTop="8dp"
 
         android:layout_marginEnd="24dp"
-        android:background="@drawable/custom_button_background"
+        android:background="@color/colorPrimary"
         android:text="Finalizar"
-        android:textColor="#ffff"
+
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

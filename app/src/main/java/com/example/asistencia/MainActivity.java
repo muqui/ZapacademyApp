@@ -148,54 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null;
 
     }
-    /*
-    private void loginUser(String email, String password) throws Exception {
-
-
-
-            compositeDisposable.add(myAPI.loginUser(email, password)
-                    .subscribeOn(Schedulers.io())
-
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<String>() {
-
-
-                                   @Override
-                                   public void accept(String s) {
-
-                                       if (s.contains("email")) {
-                                           progressDialogLogin.dismiss();
-                                           Intent intent = new Intent(MainActivity.this, home.class);
-                                           startActivityForResult(intent, 0);
-                                       } else{
-                                           progressDialogLogin.dismiss();
-                                           Toast.makeText(MainActivity.this, "Error " + s, Toast.LENGTH_LONG).show();
-                                       }
-
-
-
-                                   }
-
-
-                               }, new Consumer<Throwable>() {
-                                   @Override
-                                   public void accept(Throwable throwable) throws Exception {
-                                       progressDialogLogin.dismiss();
-                                      Toast.makeText(MainActivity.this, "fail " + throwable, Toast.LENGTH_SHORT).show();
-                                   }
-                               }
-                    )
-
-
-
-            );
-
-
-
-
-    }
-
-     */
 
 
 }

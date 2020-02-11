@@ -41,25 +41,31 @@ public interface INodeJS {
 
 
 
-    @GET("beneficiario/{curp}")
-    Observable<String> getBeneficiary(@Path("curp") String curp);
+   // @GET("beneficiario/{curp}")
+   // Observable<String> getBeneficiary(@Path("curp") String curp);
 
 
 
-    @GET("beneficiario/{curp}")
-    Call<Beneficiary> getOneBeneficiary(@Path("curp") String curp, @Header("Authorization") String token);
+  //  @GET("beneficiario/{curp}")
+  //  Call<Beneficiary> getOneBeneficiary(@Path("curp") String curp, @Header("Authorization") String token);
 
 
     @GET("beneficiario/{curp}/{evento}")
     Call<Beneficiary> getOneBeneficiary(@Path("curp") String curp,@Path("evento") String evento, @Header("Authorization") String token);
 
 
-    @GET("beneficiario/lista/{filtro}")
-    Call<List<Beneficiary>> getListBeneficiary(@Path("filtro") String filtro , @Header("Authorization") String token);
 
+    //Busqueda de beneficiario a partir de la CURP
+   // @GET("beneficiario/lista/{filtro}")
+   // Call<List<Beneficiary>> getListBeneficiary(@Path("filtro") String filtro , @Header("Authorization") String token);
+
+    //Busqueda de beneficiario a partir de su nombre, primer apellido, segundo apellido
+    @GET("beneficiario/listadatos/{nombre}/{primerapellido}/{segundoapellido}/{evento}")
+    Call<List<Beneficiary>> getListBeneficiary(@Path("nombre") String filtro ,@Path("primerapellido") String primerapellido ,@Path("segundoapellido") String segundoapellido ,@Path("evento") String evento , @Header("Authorization") String token);
+
+    //Busqueda de beneficiario a partir de la CURP
     @GET("beneficiario/lista/{filtro}/{evento}")
     Call<List<Beneficiary>> getListBeneficiary(@Path("filtro") String filtro ,@Path("evento") String evento , @Header("Authorization") String token);
-
 
 
     @GET("evento/eventos")
@@ -81,8 +87,9 @@ public interface INodeJS {
     @FormUrlEncoded
     Call<String> validateAttendance(@Field("event_id") String event_id,@Field("beneficiary_id") String beneficiary_id, @Header("Authorization") String token);
 
+
+    /*Sube evidencia al servidor imagen en jpg*/
     @POST("evento/asistencia/evidencia")
-    //@FormUrlEncoded
     @Multipart
     Call<ResponseBody> uploadEvindence(@Part MultipartBody.Part  avatar, @Header("Authorization") String token);
 

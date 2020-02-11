@@ -3,6 +3,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
@@ -130,27 +131,36 @@ public class Resultado extends AppCompatActivity implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
 //        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
 
-        Log.d("Imagen temporal = ", ""+ mCurrentPhotoPath);
 
-        try {
-            File file = new File(mCurrentPhotoPath);
-            String urlImagen = mCurrentPhotoPath;
-            Bitmap  bitmap = MediaStore.Images.Media
-                    .getBitmap(Resultado.this.getContentResolver(), Uri.fromFile(file));
+        if(resultCode == Activity.RESULT_OK){
+            Log.d("Imagen temporal = ", ""+ mCurrentPhotoPath);
+
+            try {
+                File file = new File(mCurrentPhotoPath);
+                String urlImagen = mCurrentPhotoPath;
+                Bitmap  bitmap = MediaStore.Images.Media
+                        .getBitmap(Resultado.this.getContentResolver(), Uri.fromFile(file));
 
 
-            Intent intent = new Intent (getApplicationContext(), Evidencia.class);
-           // intent.putExtra("evidencia",bitmap);
-            intent.putExtra("evidencia",mCurrentPhotoPath);
-              intent.putExtra("resultado",beneficiary);
-             intent.putExtra("token",token);
-             intent.putExtra("event",evento);
+                Intent intent = new Intent (getApplicationContext(), Evidencia.class);
+                // intent.putExtra("evidencia",bitmap);
+                intent.putExtra("evidencia",mCurrentPhotoPath);
+                intent.putExtra("resultado",beneficiary);
+                intent.putExtra("token",token);
+                intent.putExtra("event",evento);
 
-            startActivityForResult(intent, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(" temporal error = ", ""+ e);
+                startActivityForResult(intent, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d(" temporal error = ", ""+ e);
+            }
+
         }
+        if(resultCode == Activity.RESULT_CANCELED){
+            Toast.makeText(Resultado.this, "Foto cancelada " , Toast.LENGTH_SHORT).show();
+
+        }
+
 
 
     }

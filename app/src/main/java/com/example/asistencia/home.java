@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class home extends AppCompatActivity implements ZXingScannerView.ResultHandler,  View.OnClickListener {
+public class home extends AppCompatActivity implements   View.OnClickListener {
     int PERMISSIONS_REQUEST_ACCESS_CAMERA=0;
     private Button btnCode;
     private Button btnManual;
@@ -78,6 +79,18 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
 
 
     }
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent event){
+        if (keycode == KeyEvent.KEYCODE_BACK){
+
+            intent = new Intent (home.this, Evento.class);
+            intent.putExtra("token",token);
+            intent.putExtra("event",evento);
+            startActivityForResult(intent, 1);
+
+        }
+        return super.onKeyDown(keycode, event);
+    }
 
     @Override
     public void onResume(){
@@ -89,17 +102,21 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
             requestPermissions(new String[]{Manifest.permission.CAMERA},
                     PERMISSIONS_REQUEST_ACCESS_CAMERA);
         } else {
-            mScannerView = new ZXingScannerView(getApplicationContext());
-            setContentView(mScannerView);
-            mScannerView.setResultHandler(this);
-            mScannerView.startCamera();
+            intent = new Intent (home.this, scanner.class);
+            startActivityForResult(intent, 1);
+
+            //mScannerView = new ZXingScannerView(getApplicationContext());
+            //setContentView(mScannerView);
+            //mScannerView.setResultHandler(this);
+            //mScannerView.startCamera();
+
         }
 
     }
 
 
 
-
+/*
 
     @Override
     public void handleResult(Result result) {
@@ -133,28 +150,18 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
 
 
     }
-
+*/
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnScan:
 
+                leerCodigoQR();
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        this.checkSelfPermission(Manifest.permission.CAMERA)
-                                != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},
-                            PERMISSIONS_REQUEST_ACCESS_CAMERA);
-                } else {
-                    mScannerView = new ZXingScannerView(getApplicationContext());
-                    setContentView(mScannerView);
-                    mScannerView.setResultHandler(this);
-                    mScannerView.startCamera();
-                    PERMISSIONS_REQUEST_ACCESS_CAMERA= 1;
-                }
                 break;
             case R.id.btnManual:
-                 intent = new Intent (v.getContext(), BusquedaManual.class);
+
+                intent = new Intent (v.getContext(), Busqueda.class);
                 intent.putExtra("token",token);
                 intent.putExtra("event",evento);
                 startActivityForResult(intent, 0);
@@ -168,6 +175,28 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
         }
     }
 
+    //Lanza la camara en busca de un QR
+
+    private void leerCodigoQR() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                this.checkSelfPermission(Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
+        } else {
+           // mScannerView = new ZXingScannerView(getApplicationContext());
+           // setContentView(mScannerView);
+           // mScannerView.setResultHandler(this);
+           // mScannerView.startCamera();
+           // PERMISSIONS_REQUEST_ACCESS_CAMERA= 1;
+            intent = new Intent (home.this, scanner.class);
+            intent.putExtra("token",token);
+            intent.putExtra("event",evento);
+            startActivityForResult(intent, 1);
+        }
+    }
+
+    /*
 
     public void  buscarBeneficiario(String curp, final String event){
         Log.d("Curp", curp);
@@ -185,20 +214,29 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
             @Override
             public void onResponse(Call<Beneficiary> call, Response<Beneficiary> response) {
 
-                Log.d("Response body", ""+ response.body());
+                Log.d("HOY10-02-2020", ""+ response.body());
                      beneficiary = response.body();
 
 
-                Intent intent = new Intent (getApplicationContext(), Resultado.class);
-                intent.putExtra("resultado",beneficiary);
-                intent.putExtra("token",token);
-                intent.putExtra("event",evento);
+                     if(beneficiary.getCurp()  == null){
+                         Toast.makeText(home.this, "No se encontro CURP " , Toast.LENGTH_SHORT).show();
+                         leerCodigoQR();
+
+                     }
+                     else {
+                         Intent intent = new Intent (getApplicationContext(), Resultado.class);
+                         intent.putExtra("resultado",beneficiary);
+                         intent.putExtra("token",token);
+                         intent.putExtra("event",evento);
 
 
 
-                startActivityForResult(intent, 0);
+                         startActivityForResult(intent, 0);
 
-                Log.d("Beneficiario", beneficiary.toString());
+                         Log.d("Beneficiario", beneficiary.toString());
+                     }
+
+
             }
 
             @Override
@@ -210,4 +248,5 @@ public class home extends AppCompatActivity implements ZXingScannerView.ResultHa
         //return  retrofit;
    progressDialogBuscando.dismiss();
     }
+    */
 }

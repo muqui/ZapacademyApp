@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#195B98"
     tools:context=".ResultadoManual">
 
     <TextView
@@ -16,7 +15,6 @@
         android:layout_marginEnd="24dp"
         android:text="Resultado"
         android:gravity="center_horizontal"
-        android:textColor="#ffff"
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

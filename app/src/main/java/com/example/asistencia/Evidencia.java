@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class Evidencia extends AppCompatActivity implements View.OnClickListener {
     ImageView imgEvidencia;
     Button btnFinalizar;
@@ -54,6 +56,7 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
     private  Retrofit retrofitLogin;
     String nombreImagen;
     String imgf;
+    FileOutputStream outStream = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,32 +87,32 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
         imgEvidencia.setImageBitmap(bitmap);
         btnFinalizar = (Button) findViewById(R.id.btnFinalizar);
         btnFinalizar.setOnClickListener(this);
-        /*
-        btnFinalizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.setMessage("loading");
-                progressDialog.show();
-                progressDialog.setCancelable(false);
-                btnFinalizar.setEnabled(false);
+        saveEvidence( beneficiary.getCurp()+"_"+ event.getId());
 
-                Attendance asistencia = new Attendance("1","2020-02-01",""+event.getId(),""+token.getUsuario().getId(),beneficiary.getId());
-          //      saveAttendance(asistencia);
-                uploadEvidence();
-
-                progressDialog.dismiss();
-
-            }
-        });
-
-         */
 }
+
+
+    // Si el Usuario se regresa será llevado al layout resultado, retornandole los datos que recibio.
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent event){
+        if (keycode == KeyEvent.KEYCODE_BACK){
+
+           Intent intent = new Intent (Evidencia.this, Resultado.class);
+            intent.putExtra("resultado",beneficiary);
+            intent.putExtra("token",token);
+            intent.putExtra("event",event);
+            startActivityForResult(intent, 1);
+
+        }
+        return super.onKeyDown(keycode, event);
+    }
 
 //Registra evidencia
 
     private void saveAttendance (Attendance asistencia){
 
         User user = null;
+
 
 
         if(retrofitLogin == null)
@@ -144,11 +147,7 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
                 }
                 else{
                     saveEvidence(""+ beneficiary.getCurp()+"_"+event.getId());
-                    // Intent intent = new Intent (Evidencia.this, home.class);
-                    // intent.putExtra("resultado",beneficiary);
-                    //intent.putExtra("token",token);
-                    // intent.putExtra("event",event);
-                    // startActivityForResult(intent, 0);
+
                 }
 
 
@@ -181,7 +180,7 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
         }
     }
     public void saveEvidence(String nombre){
-        FileOutputStream outStream = null;
+
 
         // Write to SD Card
         try {
@@ -193,7 +192,7 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
             File outFile = new File(dir, fileName);
 
             outStream = new FileOutputStream(outFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, outStream);
             outStream.flush();
             outStream.close();
 
@@ -218,10 +217,13 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
        pd.setMessage("Subiendo evidencia ........");
        pd.setIndeterminate(true);
        pd.setCancelable(false);
+       saveEvidence( beneficiary.getCurp()+"_"+ event.getId());
+       File sdCard = Environment.getExternalStorageDirectory();
+       File dir = new File(sdCard.getAbsolutePath() + "/zapacademy/" + beneficiary.getCurp()+"_"+ event.getId()+".jpg") ;
 
 
        File file = new File(imgf);
-       Log.d("Imagen evidencia ss", "" + file.getParent());
+       Log.d("dir ss", "" + dir.getPath());
        File newFile = new File(file.getParent()+"/"+ beneficiary.getCurp()+"_"+ event.getId()+".jpg");
 
        Log.d("Imagen evidencia new", "" + newFile.getName());
@@ -230,11 +232,14 @@ public class Evidencia extends AppCompatActivity implements View.OnClickListener
        file.renameTo(newFile);
        Log.d("Imagen file", "" + file.getName());
        Log.d("Imagen new ", "" + newFile.getName());
-       RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
-       MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", newFile.getName(), requestBody);
+
+       //RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
+       //MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", newFile.getName(), requestBody);
+       RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), dir);
+       MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", dir.getName(), requestBody);
 
 
-        if(retrofitLogin == null)
+       if(retrofitLogin == null)
             retrofitLogin = new Retrofit.Builder()
                     .baseUrl("https://zapacademy.herokuapp.com/")
 
